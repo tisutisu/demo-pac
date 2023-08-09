@@ -6,8 +6,8 @@ metadata:
   annotations:
     pipelinesascode.tekton.dev/on-event: "pull_request"
     pipelinesascode.tekton.dev/on-cel-expression: |
-            target_branch == "main" && !"*.md".pathChanged()
-    pipelinesascode.tekton.dev/task: "[task/git-clone/0.1/git-clone.yaml, .tekton/tasks/yaml-lint.yaml]"
+            target_branch == "main" && "*.md".pathChanged()
+    pipelinesascode.tekton.dev/task: "[task/git-clone/0.1/git-clone.yaml]"
     pipelinesascode.tekton.dev/task-2: "yaml-lint"
     pipelinesascode.tekton.dev/max-keep-runs: "5"
 spec:
@@ -36,17 +36,6 @@ spec:
             value: $(params.revision)
           - name: depth
             value: "0"
-      - name: yaml-lint-check
-        runAfter:
-          - fetch-repository
-        taskRef:
-          name: yaml-lint
-        workspaces:
-          - name: shared-workspace
-            workspace: workspace
-        params:
-        - name: args
-          value: ["."]
   workspaces:
     - name: workspace
       volumeClaimTemplate:
